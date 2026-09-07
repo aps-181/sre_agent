@@ -1,0 +1,6 @@
+# AI Agent Framework (using the slim version to keep it lightweight)
+# The [openai] extra allows Pydantic AI to communicate with local Ollama
+pydantic-ai-slim[openai]
+
+# Model Context Protocol (MCP) SDK - Provides FastMCP/MCPServer
+mcp
