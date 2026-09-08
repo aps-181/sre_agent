@@ -4,3 +4,4 @@ pydantic-ai-slim[openai]
 
 # Model Context Protocol (MCP) SDK - Provides FastMCP/MCPServer
 mcp
+fastmcp
