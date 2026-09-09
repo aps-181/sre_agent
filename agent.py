@@ -43,9 +43,15 @@ async def main():
             await session.initialize()
             
             mcp_tools = await session.list_tools()
-            tool_descriptions = "\n".join(
-                [f"- {t.name}: {t.description}" for t in mcp_tools.tools]
-            )
+            tool_descriptions_list = []
+
+            for t in mcp_tools.tools:
+                schema_props = t.inputSchema.get("properties", {}) if isinstance(t.inputSchema, dict) else {}
+                params = [f"{p_name}: {p_info.get('type', 'str')}" for p_name, p_info in schema_props.items()]
+                params_str = f"({', '.join(params)})" if params else "()"
+                tool_descriptions_list.append(f"- {t.name}{params_str}: {t.description}")
+
+            tool_descriptions = "\n".join(tool_descriptions_list)
             
             @agent.tool_plain
             async def execute_mcp_tool(tool_name: str, arguments: str = "{}") -> str:
