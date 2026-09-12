@@ -1,7 +1,23 @@
-# AI Agent Framework (using the slim version to keep it lightweight)
-# The [openai] extra allows Pydantic AI to communicate with local Ollama
-pydantic-ai-slim[openai]
+# Core AI Brain & Agent Framework
+pydantic-ai>=0.0.14
+pydantic>=2.0.0
 
-# Model Context Protocol (MCP) SDK - Provides FastMCP/MCPServer
-mcp
-fastmcp
+# MCP (Model Context Protocol) Server & Tools
+mcp>=1.0.0
+fastmcp>=0.1.0
+
+# Async Database & Persistence Layer
+sqlalchemy>=2.0.0
+asyncpg>=0.29.0
+greenlet>=3.0.0
+
+# Event Pipeline (Redpanda / Kafka Client)
+aiokafka>=0.11.0
+
+# API Server & Execution Shell
+fastapi>=0.110.0
+uvicorn>=0.28.0
+
+# Testing & Quality Assurance
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
