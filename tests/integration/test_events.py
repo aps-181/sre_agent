@@ -77,5 +77,53 @@ async def test_redpanda_event_pipeline():
             await session.commit()
 
 
+# TODO: Update test to use same topic and group_id
+@pytest.mark.asyncio
+async def test_consumer_pauses_on_max_retries():
+    topic = "sre.alerts.retry.test"
+    producer = AlertProducer()
+    # Fast backoff rate (0.01s) so test suite finishes quickly
+    consumer = AlertConsumer(
+        topic=topic,
+        group_id="test-retry-pause-group",
+        max_retries=3,
+        backoff_base=0.01,
+    )
+
+    await producer.start()
+    await consumer.start()
+
+    call_count = 0
+
+    async def failing_handler(payload: dict) -> None:
+        nonlocal call_count
+        call_count += 1
+        raise RuntimeError("Simulated transient pipeline failure")
+
+    consumer_task = asyncio.create_task(consumer.consume(handler=failing_handler))
+
+    try:
+        # 1. Publish alert payload that triggers processing error
+        await producer.send_alert(
+            topic=topic, payload={"service_name": "failing-service"}
+        )
+
+        # 2. Poll until consumer loop halts execution
+        for _ in range(20):
+            await asyncio.sleep(0.1)
+            if not consumer._running:
+                break
+
+        # 3. Assert exact 3 retries occurred and loop was safely paused
+        assert call_count == 3
+        assert consumer._running is False
+
+    finally:
+        consumer_task.cancel()
+        await consumer.stop()
+        await producer.stop()
+
+
 if __name__ == "__main__":
     asyncio.run(test_redpanda_event_pipeline())
+    asyncio.run(test_consumer_pauses_on_max_retries())
