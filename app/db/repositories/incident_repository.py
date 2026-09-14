@@ -9,7 +9,7 @@ class IncidentRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_report(
+    async def create_incident_record(
         self, service_name: str, issue_description: str, result: InvestigationResult
     ) -> IncidentRecord | None:
         try:
