@@ -5,12 +5,13 @@ from aiokafka import AIOKafkaConsumer
 
 BOOTSTRAP_SERVERS = "localhost:19092"
 
+
 class AlertConsumer:
     def __init__(
-        self, 
-        topic: str, 
-        group_id: str = "triage-group", 
-        bootstrap_servers: str = BOOTSTRAP_SERVERS
+        self,
+        topic: str,
+        group_id: str = "triage-group",
+        bootstrap_servers: str = BOOTSTRAP_SERVERS,
     ):
         self.topic = topic
         self.group_id = group_id
@@ -25,7 +26,7 @@ class AlertConsumer:
             group_id=self.group_id,
             auto_offset_reset="earliest",
             enable_auto_commit=False,
-            value_deserializer=lambda x: json.loads(x.decode("utf-8"))
+            value_deserializer=lambda x: json.loads(x.decode("utf-8")),
         )
         await self.consumer.start()
         self._running = True
@@ -42,7 +43,9 @@ class AlertConsumer:
             async for msg in self.consumer:
                 if not self._running:
                     break
-                logging.info(f"[Consumer] Received alert payload from topic '{msg.topic}'")
+                logging.info(
+                    f"[Consumer] Received alert payload from topic '{msg.topic}'"
+                )
                 await handler(msg.value)
                 await self.consumer.commit()
         except Exception as e:

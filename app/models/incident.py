@@ -4,6 +4,7 @@ from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
+
 class IncidentRecord(Base):
     __tablename__ = "incident_reports"
 
@@ -14,4 +15,6 @@ class IncidentRecord(Base):
     evidence = Column(JSON, nullable=False)
     root_cause = Column(Text, nullable=False)
     recommended_actions = Column(JSON, nullable=False)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )

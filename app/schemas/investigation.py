@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class InvestigationResult(BaseModel):
     summary: str
     evidence: list[str]

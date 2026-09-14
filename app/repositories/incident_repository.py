@@ -4,15 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.incident import IncidentRecord
 from app.schemas.investigation import InvestigationResult
 
+
 class IncidentRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
     async def create_report(
-        self, 
-        service_name: str, 
-        issue_description: str, 
-        result: InvestigationResult
+        self, service_name: str, issue_description: str, result: InvestigationResult
     ) -> IncidentRecord | None:
         try:
             record = IncidentRecord(
@@ -22,7 +20,7 @@ class IncidentRepository:
                 summary=result.summary,
                 evidence=result.evidence,
                 root_cause=result.root_cause,
-                recommended_actions=result.recommended_actions
+                recommended_actions=result.recommended_actions,
             )
             self.db.add(record)
             await self.db.commit()

@@ -4,6 +4,7 @@ SRE_SYSTEM_PROMPT = (
     "Gather evidence, determine the root cause, and return a structured JSON report."
 )
 
+
 def build_investigation_prompt(issue: str, tool_descriptions: str) -> str:
     return (
         f"Issue: {issue}\n\n"
